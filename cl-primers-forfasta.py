@@ -4,49 +4,42 @@ from Bio import SeqIO
 import subprocess 
 
 
-def change_chars(sequence): 
-			chars_to_change = ['q','w','e','r','y','u','i','o','p','s','d','f','h','j','k','l','z','x','v','b','n','m','Q','W','E','R','Y','U','I','O','P','S','D','F','G','H','J','K','L','Z','X','V','B','N','M']
-			for index, char in enumerate(sequence):
-				sequence = sequence.replace(char, 'N')   
-			print index 
-			return sequence
+
 
 def write_primer3_input(sequence):    
-		if sequence == 'null':
-			print "USING EXAMPLE SEQUENCE: "
-			sequence = "aggctvagctagcatcgatcagactagctacacttacgactacgactacgtactcagatcagtacgactacgactacgcatcgcatcatacgcatacgactacacactacgatcatctatcatcagtcgactacgtcgctagctagctacgac"
-			gene = 'recG'
-			print '\nGenerating primer3 input file from example sequence:  ' + sequence
-		elif len(sequence) > 30:
-			print '\nGenerating primer3 input file with submitted sequence:  ' + sequence
+    	if sequence == 'null':
+    		print "USING EXAMPLE SEQUENCE: "
+	    	sequence = "agctagctagcatcgatcagactagctacacttacgactacgactacgtactcagatcagtacgactacgactacgcatcgcatcatacgcatacgactacacactacgatcatctatcatcagtcgactacgtcgctagctagctacgac"
+    		gene = 'recG'
+    		print '\nGenerating primer3 input file from example sequence:  ' + sequence
+    	#elif len(sequence) > 30:
+    		#print '\nGenerating primer3 input file with submitted sequence:  ' + sequence
     	
-		newseq = str()
-		#FORMAT SEQUENCE TO TURN ANYTHING NOT A, T, G, OR C INTO N
-		chars_to_change = ['q','w','e','r','y','u','i','o','p','s','d','f','h','j','k','l','z','x','v','b','n','m','Q','W','E','R','Y','U','I','O','P','S','D','F','G','H','J','K','L','Z','X','V','B','N','M']
-		for index, char in enumerate(sequence):
-			if char in chars_to_change:
-				newseq = newseq + 'N'   
-			else:
-				 newseq = newseq + char         	
-		#Loads default primer3 options
-		primer3options = open('./primer3/cloning_primer3_options.txt').readlines()  
-		
-		print newseq
-		#CONSTRUCT PRIMER3 OPTIONS FILE, RUN PRIMER3 AND SAVE FILE TO primer3_input
-		product_size = len(sequence)
-		prod_size_w_BB = len(sequence) + 55
-		print "\n Projected Product Size is " + str(product_size) + 'bp ( ' + str(prod_size_w_BB) + 'bp with Biobrick adapters )\n'                
-		end_base = str (product_size)
-		
-		sequence_template = "SEQUENCE_TEMPLATE=" + sequence + "\n"
-		target = "SEQUENCE_INCLUDED_REGION=0, " + end_base + "\n"
-			
-		output = open('./primer3/primer3_input', 'w')
-		output.write(sequence_template)
-		output.write(target)
-		for x in primer3options:
-			output.write(x)
-			
+    	
+        #FORMAT SEQUENCE TO TURN ANYTHING NOT A, T, G, OR C INTO N
+#       sequence = current_seq*seq
+#       sequence = sequence.replace(("S", "N")("Y", "N")("R", "N")("W", "N")("K", "N")("M", "N")("s", "N")("y", "N")("r", "N")("w", "N")("k", "N")("m", "N")) #replaces syrwkm with n NOTE: TRY TO FIND MORE EFFICIENT REPLACEMENT METHOD
+    
+        	
+        #Loads default primer3 options
+        primer3options = open('./primer3/cloning_primer3_options.txt').readlines()  
+    	
+    
+        #CONSTRUCT PRIMER3 OPTIONS FILE, RUN PRIMER3 AND SAVE FILE TO primer3_input
+        product_size = len(sequence)
+        prod_size_w_BB = len(sequence) + 55
+        #print "Product size here will be " + str(product_size) + 'bp ( ' + str(prod_size_w_BB) + 'bp with Biobrick adapters )\n'                
+        end_base = str (product_size - 0)
+        
+        sequence_template = "SEQUENCE_TEMPLATE=" + sequence + "\n"
+        target = "SEQUENCE_INCLUDED_REGION=0, " + end_base + "\n"
+        	
+        output = open('./primer3/primer3_input', 'w')
+        output.write(sequence_template)
+        output.write(target)
+        for x in primer3options:
+        	output.write(x)
+        	
     #END write_primer3_input
 
 
@@ -54,7 +47,7 @@ def write_primer3_input(sequence):
 
 
 def run_primer3(): 
-	print "- - - - - - - Running Primer3 - - - - - - - \n"
+	#print "- - - - - - - Running Primer3 - - - - - - - \n"
 	test = ('./primer3/primer3_core' + ' ./primer3/primer3_input')
 	process = subprocess.Popen(test, shell=True, stdout=subprocess.PIPE)
 	process.wait()
@@ -104,10 +97,10 @@ def run_primer3():
                     output.close()
 
             #IF PRIMERS ARE FOUND, PRIMER3 OUTPUT IS APPENDED TO PRIMER3_OUTPUT
-                    #print "PRIMER3 OUTPUT FOR %i: \n\n" % id
-                    #print "\n\nPRIMER3 OUTPUT for %i: \n\n" % id
-                    #print primer3_out
-                    #print primer3_out
+                    print "PRIMER3 OUTPUT FOR %i: \n\n" % id
+                    print "\n\nPRIMER3 OUTPUT for %i: \n\n" % id
+                    print primer3_out
+                    print primer3_out
     
     
                     close("/primer3/primer3_input")
@@ -151,19 +144,19 @@ def extract_primer_sequences(): #SUBROUTINE
 		except NameError:
 			right_problems = 'none'
 			            
-		if left_problems != 'none' and right_problems != 'none':
-				print "Made the best primers possible, but there might still be some issues:\n"
-		if left_problems != 'none':
-				print "Potential problems with the left primer: " + left_problems
-		if right_problems != 'none':
-				print "Potential problems with the right primer: " + right_problems
+		#if left_problems != 'none' and right_problems != 'none':
+				#print "\tMade the best primers possible, but there might still be some issues:\n"
+		#if left_problems != 'none':
+				#print "Potential problems with the left primer: " + left_problems
+		#if right_problems != 'none':
+				#print "Potential problems with the right primer: " + right_problems
 		
-		print "- - - - - - Primer Sequences - - - - - - \n"		
+		#print "- - - - - - Primer Sequences - - - - - - \n"		
 		if left != 'none' and right != 'none':
-			print "Sense_Primer: " + left
-			print "Aintisense_Primer: " + right
-			final_primers.write('Sense Primer: ' + left)
-			final_primers.write('Antisense Primer: ' + right)
+			#print "Left_Primer: " + left
+			#print "Right_Primer: " + right
+			final_primers.write('Left Primer: ' + left)
+			final_primers.write('Right Primer: ' + right)
 	 		
 
                         
@@ -177,49 +170,39 @@ def extract_primer_sequences(): #SUBROUTINE
 def add_biobrick_extensions(): #SUBROUTINE
 
 		final_primers = open("final_primers.fa", 'r').readlines()
-		
-		print "\tAdding Biobrick Extensions to each primer - these are now RFC 23 compatible:\n"
-		
-		#Other 5' extensions to use:
-		fextwRBS = "CGATCGAGAATTCGCGGCCGCTTCTAGA" + "AGGAGG" + "AACAAU"
-		fextwRBSandEnhancer = "GCUCUUUAACAAUUUAUCA" + "GAUCCA" + "AGGAGG" + "AACAAU"
-		
-		fext = "CGATCGAGAATTCGCGGCCGCTTCTAGA"
+
+		#print "\tAdding Biobrick Extensions to each primer - these are now RFC 23 compatible:\n"
+        
+		fext = "CGATCGAGAATTCGCGGCCGCTTCTAGAaaagaggagaaa"
 		rext = "GCTATGCACTGCAGCGGCCGCTACTAGT"
-		
+        
 		final_left_primer = fext + final_primers[0][13:]
 		final_right_primer = rext + final_primers[1][14:]
 		
 		print final_left_primer
 		print final_right_primer
-		
-		#END add_biobrick_extensions
-		
+
+        #END add_biobrick_extensions
+
 
 
 
 
 ############# BEGIN PROGRAM ##############
 
-global sequence
 
-if (len(sys.argv) > 2):
-	for entry in sys.argv[1:]:
-		sequence = entry
-		write_primer3_input(sequence)
-		run_primer3()
-		extract_primer_sequences()
-		
-elif (len(sys.argv) > 1):
+if (len(sys.argv) > 1):
 	sequence = sys.argv[1]
 	write_primer3_input(sequence)
-	run_primer3()
-	extract_primer_sequences()
-	
 else : 	
 	# here is where we would say - if command line input has .txt or .fa */
 	sequence = 'null'
 	write_primer3_input(sequence)
+
+run_primer3()
+extract_primer_sequences()
+add_biobrick_extensions()
+
 
 
 
